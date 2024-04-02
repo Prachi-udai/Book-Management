@@ -31,3 +31,8 @@ Design and code an API over this.
         To get all the publications.                       //DONE
         To get a specific publication.                     //DONE
         To get a list of publications based on books.      //DONE
+
+4. POST REQUEST
+    Add new book                                           //DONE
+    Add new author                                         //DONE
+    Add new publication                                    //DONE

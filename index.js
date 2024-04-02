@@ -1,10 +1,14 @@
 const express = require("express");
+var bodyParser = require("body-parser");
 
 // DATABASE
 const database = require("./database");
 
 
-const booky = express();
+const app = express();
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 /*
 Route               /
@@ -14,7 +18,7 @@ Parameter           NONE
 Methods             GET
 */
 
-booky.get("/",(req,res) => {
+app.get("/",(req,res) => {
     return res.json({book: database.books});
 });
 
@@ -26,7 +30,7 @@ Parameter           isbn
 Methods             GET
 */
 
-booky.get("/is/:isbn", (req,res) => {
+app.get("/is/:isbn", (req,res) => {
     const getSpecificBook = database.books.filter(
         (books) => books.ISBN === req.params.isbn
     );
@@ -45,7 +49,7 @@ Parameter           category
 Methods             GET
 */
 
-booky.get("/c/:category", (req,res) => {
+app.get("/c/:category", (req,res) => {
     const getSpecificBook = database.books.filter(
         (books) => books.category.includes(req.params.category)
     );
@@ -65,7 +69,7 @@ Parameter           language
 Methods             GET
 */
 
-booky.get("/l/:language", (req,res) => {
+app.get("/l/:language", (req,res) => {
     const getSpecificBook = database.books.filter(
         (books) => books.language === req.params.language
     );
@@ -84,7 +88,7 @@ Parameter           NONE
 Methods             GET
 */
 
-booky.get("/author",(req,res) => {
+app.get("/author",(req,res) => {
     return res.json({author: database.author});
 });
 
@@ -96,7 +100,7 @@ Parameter           name
 Methods             GET
 */
 
-booky.get("/author/:name", (req,res) => {
+app.get("/author/:name", (req,res) => {
     const getSpecificAuthor = database.author.filter(
         author => author.name === req.params.name
     );
@@ -115,7 +119,7 @@ Parameter           id
 Methods             GET
 */
 
-booky.get("/author/id/:id", (req,res) => {
+app.get("/author/id/:id", (req,res) => {
     const getSpecificAuthor = database.author.filter(
         author => author.id === req.params.id
     );
@@ -134,7 +138,7 @@ Parameter           isbn
 Methods             GET
 */
 
-booky.get("/author/books/:isbn", (req,res) => {
+app.get("/author/books/:isbn", (req,res) => {
     const getSpecificAuthor = database.author.filter(
         (author) => author.books.includes(req.params.isbn) 
     );
@@ -154,7 +158,7 @@ Parameter           NONE
 Methods             GET
 */
 
-booky.get("/pub",(req,res) => {
+app.get("/pub",(req,res) => {
     return res.json({publication: database.publication});
 });
 
@@ -166,7 +170,7 @@ Parameter           name
 Methods             GET
 */
 
-booky.get("/pub/:name", (req,res) => {
+app.get("/pub/:name", (req,res) => {
     const getSpecificPublication = database.publication.filter(
         (publication) => publication.name === req.params.name
     );
@@ -185,7 +189,7 @@ Parameter           id
 Methods             GET
 */
 
-booky.get("/pub/id/:id", (req,res) => {
+app.get("/pub/id/:id", (req,res) => {
     const getSpecificPublication = database.publication.filter(
         (publication) => publication.id === req.params.id
     );
@@ -204,7 +208,7 @@ Parameter           books
 Methods             GET
 */
 
-booky.get("/pub/books/:books", (req,res) => {
+app.get("/pub/books/:books", (req,res) => {
     const getSpecificPublication = database.publication.filter(
         (publication) => publication.books.includes(req.params.books) 
     );
@@ -216,6 +220,48 @@ booky.get("/pub/books/:books", (req,res) => {
 
 });
 
-booky.listen(2500, () => {
+/*
+Route               /book/new
+Description         Add new book
+Access              PUBLIC
+Parameter           NONE
+Methods             POST
+*/
+
+app.post("/book/new", (req,res) => {
+    const newBook = req.body;
+    database.books.push(newBook);
+    return res.json({updatedBooks: database.books});
+})
+
+/*
+Route               /author/new
+Description         Add new author
+Access              PUBLIC
+Parameter           NONE
+Methods             POST
+*/
+
+app.post("/author/new", (req,res) => {
+    const newAuthor = req.body;
+    database.author.push(newAuthor);
+    return res.json({updatedAuthors: database.author});
+})
+
+/*
+Route               /pub/new
+Description         Add new publication
+Access              PUBLIC
+Parameter           NONE
+Methods             POST
+*/
+
+app.post("/pub/new", (req,res) => {
+    const newPublication = req.body;
+    database.publication.push(newPublication);
+    return res.json({updatedPublications: database.publication});
+})
+
+app.listen(2500, () => {
     console.log("Server is up and running on port 2500.");
 });
